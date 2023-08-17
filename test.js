@@ -33,9 +33,13 @@ test("recieves issues.opened event", async function () {
   const mock = nock("https://api.github.com")
     // create new check run
     .post(
-      "/repos/probot/example-aws-lambda-serverless/issues/1/comments",
+      "/repos/robandpdx/cd-demo/actions/runs/5896124763/deployment_protection_rule",
       (requestBody) => {
-        assert.equal(requestBody, { body: "Hello, World!" });
+        assert.equal(requestBody, { 
+          environment_name: "cd-production",
+          state: "approved",
+          comment: "Deployment approved by external system"
+        });
 
         return true;
       }
@@ -43,19 +47,11 @@ test("recieves issues.opened event", async function () {
     .reply(201, {});
 
   await probot.receive({
-    name: "issues",
-    id: "1",
+    name: "deployment_protection_rule",
     payload: {
-      action: "opened",
-      repository: {
-        owner: {
-          login: "probot",
-        },
-        name: "example-aws-lambda-serverless",
-      },
-      issue: {
-        number: 1,
-      },
+      action: "requested",
+      environment: "cd-production",
+      deployment_callback_url: "https://api.github.com/repos/robandpdx/cd-demo/actions/runs/5896124763/deployment_protection_rule"
     },
   });
 
