@@ -10,10 +10,18 @@ module.exports = (app) => {
     var environment = context.payload.environment;
     var deployment_callback_url = context.payload.deployment_callback_url;
 
+    // TODO: Insert your logic here.
+
     return context.octokit.request(`POST ${deployment_callback_url}`, {
       environment_name: environment,
       state: "approved",
       comment: "Deployment approved by external system"
     })
+    // ...or reject the deployment
+    // return context.octokit.request(`POST ${deployment_callback_url}`, {
+    //   environment_name: environment,
+    //   state: "rejected",
+    //   comment: "Deployment approved by external system"
+    // })
   });
 };
