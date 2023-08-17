@@ -1,6 +1,11 @@
-# Probot & AWS Lambda example
+# Custom deployment protection rule demo
 
-This repository is an example of how to deploy the "Hello, World" of probot apps to [AWS Lambda](https://aws.amazon.com/lambda/) using [aws sam](https://aws.amazon.com/serverless/sam/).
+This repository is an example of a [custom deployment protection rule](https://docs.github.com/en/actions/deployment/protecting-deployments/creating-custom-deployment-protection-rules).  
+
+To use this demo app...  
+1. Create a GitHub App [as described here](https://docs.github.com/en/actions/deployment/protecting-deployments/creating-custom-deployment-protection-rules#creating-a-custom-deployment-protection-rule-with-github-apps).  
+1. Follow the instructions in the [deployment section below](#deployment).  
+1. Configure the deployment protection rule for your repo. [See documentation here](https://docs.github.com/en/actions/deployment/protecting-deployments/configuring-custom-deployment-protection-rules).  
 
 ## Local setup
 
