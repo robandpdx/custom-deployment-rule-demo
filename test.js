@@ -4,6 +4,15 @@ const assert = require("uvu/assert");
 const nock = require("nock");
 nock.disableNetConnect();
 
+const payload = {
+  name: "deployment_protection_rule",
+  payload: {
+    action: "requested",
+    environment: "cd-production",
+    deployment_callback_url: "https://api.github.com/repos/robandpdx/cd-demo/actions/runs/5896124763/deployment_protection_rule"
+  }
+}
+
 const {
   Probot,
   ProbotOctokit,
@@ -29,7 +38,9 @@ test.before.each(() => {
   probot.load(app);
 });
 
-test("recieves issues.opened event", async function () {
+test("recieves issues.opened event, approve deployment", async function () {
+  process.env.APPROVE = "true";
+
   const mock = nock("https://api.github.com")
     // create new check run
     .post(
@@ -46,14 +57,31 @@ test("recieves issues.opened event", async function () {
     )
     .reply(201, {});
 
-  await probot.receive({
-    name: "deployment_protection_rule",
-    payload: {
-      action: "requested",
-      environment: "cd-production",
-      deployment_callback_url: "https://api.github.com/repos/robandpdx/cd-demo/actions/runs/5896124763/deployment_protection_rule"
-    },
-  });
+  await probot.receive(payload);
+
+  assert.equal(mock.activeMocks(), []);
+});
+
+test("recieves issues.opened event, reject deployment", async function () {
+  process.env.APPROVE = "false";
+
+  const mock = nock("https://api.github.com")
+    // create new check run
+    .post(
+      "/repos/robandpdx/cd-demo/actions/runs/5896124763/deployment_protection_rule",
+      (requestBody) => {
+        assert.equal(requestBody, { 
+          environment_name: "cd-production",
+          state: "rejected",
+          comment: "Deployment rejected by external system"
+        });
+
+        return true;
+      }
+    )
+    .reply(201, {});
+
+  await probot.receive(payload);
 
   assert.equal(mock.activeMocks(), []);
 });

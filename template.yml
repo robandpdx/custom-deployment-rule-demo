@@ -12,6 +12,13 @@ Parameters:
   githubPrivateKey:
     Description: The private key of your GitHub app
     Type: String
+  approve:
+    Description: Approve deployments flag
+    Type: String
+    AllowedValues:
+      - true
+      - false
+    Default: true
 
 Resources:
   webhooks:
@@ -32,6 +39,7 @@ Resources:
           APP_ID: !Ref githubAppId
           WEBHOOK_SECRET: !Ref githubWebhookSecret
           PRIVATE_KEY: !Ref githubPrivateKey
+          APPROVE: !Ref approve
 Outputs:
   WebhooksUrl:
     Description: "Endpoint URL"
