@@ -2,7 +2,7 @@
  * @param {import('probot').Probot} app
  */
 module.exports = (app) => {
-  app.log("Yay! The app was loaded!");
+  console.log("Yay! The app was loaded!");
 
   app.on("deployment_protection_rule.requested", async (context) => {
     console.log("deployment_protection_rule.requested")
